@@ -50,7 +50,9 @@ If a guide has more than one commit-producing step (a multi-topic sprint, or a f
 
 ### 5. Execute one step at a time
 
-After the guide is written and the user has seen it, run the steps in order. After each step: report what happened, what the check showed, and stop. Do not start the next step without an explicit go-ahead, even if the result was clean. This is the actual point of the skill — it is a discipline, not just a document format. A guide that gets executed end to end with no stops has stopped being a sprint.
+Writing the guide and starting to execute it are two different go-aheads. After the guide is written, stop there. Do not run step 1 automatically, even if the guide looks obviously right. Give the user the chance to read the triage table, the ground rules, and every step's prompt, and to change any of it — reorder steps, cut one, reword a prompt — before anything runs. Only start step 1 once they've said to proceed, whether that's an explicit go and no changes, or a go after they've told you what to fix and you've fixed it.
+
+Once execution starts, run the steps in order. After each step: report what happened, what the check showed, and stop. Do not start the next step without an explicit go-ahead, even if the result was clean. This is the actual point of the skill — it is a discipline, not just a document format. A guide that gets executed end to end with no stops has stopped being a sprint.
 
 If a step's result contradicts an assumption from the ground rules or an earlier step, stop and say so before continuing, even if the fix is obvious. Silently patching over a wrong assumption is how a guide drifts from what it says it's doing.
 
@@ -58,16 +60,17 @@ If a step's result contradicts an assumption from the ground rules or an earlier
 
 Claude does not push to a remote unless explicitly told to and actually has credentials to do so. This is not a wait-to-be-asked step: every single local commit a sprint produces gets its push handoff right away, unprompted, in the same turn as the commit.
 
-The handoff is a single fenced, copy-paste-ready terminal block, formatted so the user can paste it as-is into their own terminal with no edits:
+The handoff is a single fenced, copy-paste-ready terminal block, formatted so the user can paste it as-is into a fresh terminal window with no edits. That means it cannot assume the user's shell is already sitting in the repo directory — a fresh terminal opens at the user's home directory, so the block starts with `cd` to the repo's absolute path (the one stated in the ground rules, step 3), not a relative path and not an assumption they're already there:
 
 ```bash
+cd /absolute/path/to/the/repo
 git status
 git log origin/main..HEAD --oneline
 git pull --rebase origin main
 git push origin main
 ```
 
-Adjust the branch name to match the repo. Right above the block, in one line each: how many local commits are ahead of the remote, and a one-line description of what each one does, so the user isn't pushing blind. If a step's own prompt already ran `git log`/`git status` as part of its check, reuse that output instead of re-running it just to fill in the block.
+Use the real absolute path from the ground rules, not the placeholder above. Adjust the branch name to match the repo. Right above the block, in one line each: how many local commits are ahead of the remote, and a one-line description of what each one does, so the user isn't pushing blind. If a step's own prompt already ran `git log`/`git status` as part of its check, reuse that output instead of re-running it just to fill in the block.
 
 This handoff is the default ending of any step that produces a commit, whether that's the guide's final verify-commit-stop step or an earlier step that commits mid-guide. Never make the user ask for it.
 
