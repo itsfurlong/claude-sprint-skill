@@ -13,6 +13,8 @@ Any task that will touch a real codebase: a bug fix, a small feature, a batch of
 
 ## The process
 
+**Mandatory, non-negotiable rule: presenting the guide and executing step 1 are two separate turns.** Writing the guide (steps 1 through 4 below) ends the turn. Step 5 covers this in detail, but state it here too because it is the rule most likely to get skipped: never run step 1, or any part of the work, in the same response that presents the guide to the user, no matter how obvious the fix looks or how the original request was phrased. Stop, show the guide, and wait for the user's next message before doing anything else.
+
 ### 1. Confirm the working doc exists, or create it first
 
 Ground rules can only be "stated once, up front" (step 3) if there's somewhere they were stated before this sprint and will still be stated after it. That place is the project's working doc. Before triage, check whether one exists. If it does, read it: that's where the ground rules, stack details, protected code paths, and history the guide needs already live.
@@ -32,7 +34,7 @@ Every guide opens with the constraints that apply to every step in it, so no ind
 - Where the code actually lives: the local clone. Every edit in the guide goes through it — targeted string replacement, never full-file regeneration. A hosted repo connector or API is fine for read-only work (browsing history, diffing a past commit) but never for writing a change, not even a one-line one: most such write endpoints have no partial-patch mode, so even a small edit means resending the whole file, and full-file rewrites of anything nontrivial have a real history of silently corrupting an unrelated line. If no local clone exists yet, getting one set up is part of the ground rules, before step 1 of the actual work.
 - Any code paths that are off-limits or need extra care (a regex another feature depends on, a canary check, anything that touches money or auth).
 - What "done" means for a code-touching step: it compiles/lints clean and the existing test suite still passes. Every step that touches code ends with that check built into the step's own prompt, not deferred to a separate step.
-- The commit-and-stop rule: Claude commits locally with a message stating root cause and what changed, then immediately hands over a copy-paste terminal block for status, log, and push (see section 6) without being asked, then stops. Claude does not push itself unless it has been explicitly given push credentials and told to use them.
+- The commit-and-stop rule: Claude commits locally with a message stating root cause and what changed, then immediately hands over a copy-paste terminal block for status, log, and push (see section 7) without being asked, then stops. Claude does not push itself unless it has been explicitly given push credentials and told to use them.
 - Anything that must never appear in a commit message, a file, or a doc (secrets, live customer data, a raw link that shouldn't be public).
 
 ### 4. Break the work into phases and bounded steps
@@ -44,19 +46,25 @@ Every step gets:
 - A one-line statement of its output (what exists after this step that didn't before).
 - A single prompt, written as if handed to a fresh session with no memory of this conversation: it names the exact file(s), the exact function or behavior, what not to touch, and what check to run before reporting back. A prompt that says "fix the bug we discussed" is not paste-ready; a prompt that names the function, the expected before/after, and the test to run is.
 
-The last step of every guide is always verify-commit-stop: run the full test suite one more time, do a real end-to-end check (not just unit tests), commit locally with both the root cause and the fix stated in the message, and report the commit hash. Immediately after that commit, before anything else, give the push handoff described in section 6 — never wait to be asked for it. Nothing after that until the user has tested it themselves and given the go-ahead to push.
+The last step of every guide is always verify-commit-stop: run the full test suite one more time, do a real end-to-end check (not just unit tests), commit locally with both the root cause and the fix stated in the message, and report the commit hash. Immediately after that commit, before anything else, give the push handoff described in section 7 — never wait to be asked for it. Nothing after that until the user has tested it themselves and given the go-ahead to push.
 
 If a guide has more than one commit-producing step (a multi-topic sprint, or a fix landed in stages), each one gets its own push handoff right after its commit, not one combined handoff saved for the end.
 
-### 5. Execute one step at a time
+### 5. Stop after presenting the guide — mandatory
 
-Writing the guide and starting to execute it are two different go-aheads. After the guide is written, stop there. Do not run step 1 automatically, even if the guide looks obviously right. Give the user the chance to read the triage table, the ground rules, and every step's prompt, and to change any of it — reorder steps, cut one, reword a prompt — before anything runs. Only start step 1 once they've said to proceed, whether that's an explicit go and no changes, or a go after they've told you what to fix and you've fixed it.
+This is its own step, not a footnote to step 6, because it is the rule most likely to get skipped: presenting the guide and starting to execute it are two different go-aheads, and they cannot both happen in the same turn.
 
-Once execution starts, run the steps in order. After each step: report what happened, what the check showed, and stop. Do not start the next step without an explicit go-ahead, even if the result was clean. This is the actual point of the skill — it is a discipline, not just a document format. A guide that gets executed end to end with no stops has stopped being a sprint.
+After writing the guide (steps 1 through 4), the response ends there. Do not run step 1, do not touch any file, do not run any command, even a read-only one, in that same response, and even if the fix looks completely obvious or the user's original request sounded like a green light to just do it. A request to fix a bug or build a feature is a request for a guide, not a request to skip the guide. Show the triage table, the ground rules, and every step's prompt, and wait.
+
+The user needs that pause to read the guide and change anything before code moves: reorder steps, cut one, reword a prompt, correct a wrong assumption in the ground rules. Only start step 1, in a later turn, once they've explicitly said to proceed — either a plain go-ahead with no changes, or a go-ahead after they've told you what to fix and you've fixed the guide itself.
+
+### 6. Execute one step at a time
+
+Once the user has given the go-ahead from step 5, run the steps in order. After each step: report what happened, what the check showed, and stop. Do not start the next step without an explicit go-ahead, even if the result was clean. This is the actual point of the skill — it is a discipline, not just a document format. A guide that gets executed end to end with no stops has stopped being a sprint.
 
 If a step's result contradicts an assumption from the ground rules or an earlier step, stop and say so before continuing, even if the fix is obvious. Silently patching over a wrong assumption is how a guide drifts from what it says it's doing.
 
-### 6. Hand off the push — always, automatically, no exceptions
+### 7. Hand off the push — always, automatically, no exceptions
 
 Claude does not push to a remote unless explicitly told to and actually has credentials to do so. This is not a wait-to-be-asked step: every single local commit a sprint produces gets its push handoff right away, unprompted, in the same turn as the commit.
 
@@ -74,9 +82,9 @@ Use the real absolute path from the ground rules, not the placeholder above. Adj
 
 This handoff is the default ending of any step that produces a commit, whether that's the guide's final verify-commit-stop step or an earlier step that commits mid-guide. Never make the user ask for it.
 
-### 7. Update the working doc after — not optional
+### 8. Update the working doc after — not optional
 
-The working doc from step 1 gets one dated entry after the sprint closes: what shipped, commit hashes, what's pushed versus commit-only, what was verified and how, any caveat or unverified claim that shipped anyway, and anything left open. This is not conditional on the project already having a habit of keeping one — step 1 guaranteed the doc exists, so step 7 always has somewhere to write. This is what makes the next sprint able to start from ground truth instead of from memory.
+The working doc from step 1 gets one dated entry after the sprint closes: what shipped, commit hashes, what's pushed versus commit-only, what was verified and how, any caveat or unverified claim that shipped anyway, and anything left open. This is not conditional on the project already having a habit of keeping one — step 1 guaranteed the doc exists, so step 8 always has somewhere to write. This is what makes the next sprint able to start from ground truth instead of from memory.
 
 ## Token efficiency rules
 
