@@ -31,4 +31,6 @@ No compiler, no test suite. "Done" for a SKILL.md change means: all three copies
 
 ## Changelog
 
-(none yet — this doc was just created)
+### 2026-09-26
+- Fixed the stale cross-reference in SKILL.md step 1 ("ready for step 7" -> "ready for step 8"), matching the current numbering after the earlier restructure that split the stop-before-step-1 rule into its own step. Applied to all three copies (github-package clone, saved Cowork account skill via propose_skills). Committed as 90de4ec, pushed pending. Verified by direct text comparison across copies, no test suite exists for this project.
+- Open: whether the "stop before executing step 1" restructuring (commit 721e12d) actually holds in real use is still unconfirmed. Flagged as P1 verification, not yet resolved.
