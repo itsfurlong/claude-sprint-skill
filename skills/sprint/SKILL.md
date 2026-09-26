@@ -19,7 +19,7 @@ Any task that will touch a real codebase: a bug fix, a small feature, a batch of
 
 Ground rules can only be "stated once, up front" (step 3) if there's somewhere they were stated before this sprint and will still be stated after it. That place is the project's working doc. Before triage, check whether one exists. If it does, read it: that's where the ground rules, stack details, protected code paths, and history the guide needs already live.
 
-If none exists, this is the first sprint on this project and creating the doc is part of this step, not optional, not deferred. Ask the user only for what isn't yet knowable by looking (repo location, deploy target, anything genuinely outside what the code and conversation already show), then write a working doc with: where the code lives and how it's edited, the stack and services involved, testing setup, any known-fragile areas, and an empty changelog section ready for step 7. A sprint with no working doc has nowhere to read ground rules from and nowhere to write the changelog entry to — it does not function without one.
+If none exists, this is the first sprint on this project and creating the doc is part of this step, not optional, not deferred. Ask the user only for what isn't yet knowable by looking (repo location, deploy target, anything genuinely outside what the code and conversation already show), then write a working doc with: where the code lives and how it's edited, the stack and services involved, testing setup, any known-fragile areas, and an empty changelog section ready for step 8. A sprint with no working doc has nowhere to read ground rules from and nowhere to write the changelog entry to — it does not function without one.
 
 ### 2. Triage first, always
 
