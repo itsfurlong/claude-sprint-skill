@@ -5,7 +5,7 @@ This is the working doc for the "Sprint Skill" project: refining the `/sprint` s
 ## Where the code lives and how it's edited
 
 - Repo: github.com/itsfurlong/claude-sprint-skill (public).
-- Local clone: `/Users/rich/Documents/Claude/Outputs/SprintSkill/github-package` on Rich's Mac. This is the source of truth.
+- Local clone: kept on Rich's Mac, in the connected Claude folder. This is the source of truth.
 - All edits go through this local clone only, targeted string replacement, never full-file regeneration. The GitHub connector is read-only in practice here: `create_repository` and `create_or_update_file` both return `403 Resource not accessible by integration`. Fine for read-only checks (file contents, log, diffs), never for writes.
 - Claude never pushes. Every local commit gets an immediate, unprompted terminal handoff (cd to this absolute path, then git status/log/pull/push) for Rich to run himself.
 - A container-side scratch copy exists during active editing sessions, purely as a staging draft before it's committed to this clone. The clone above is authoritative.
@@ -30,6 +30,12 @@ No compiler, no test suite. "Done" for a SKILL.md change means: all three copies
 - Known stale reference, unfixed as of 2026-09-26: step 1 of SKILL.md says "an empty changelog section ready for step 7" — the changelog step is now numbered 8.
 
 ## Changelog
+
+### 2026-09-27
+- Removed the absolute local filesystem path from WORKING.md's "Where the code lives" section (was: the literal `/Users/rich/...` path; now describes the clone's location without it). No other section referenced that path.
+- Re-proposed the `sprint` skill to Rich via the skill-proposal tool to formally close the three-copy sync open item. Diffed the installed account skill against `github-package/skills/sprint/SKILL.md` first: content was already identical (only a trailing-newline difference), so this was a formal sync, not a content fix. Pending Rich's save.
+- Open: the "Sprint skill v2" commit referenced when this sprint started was not found anywhere in git log (checked full history, `6e8ee26` through `8c2d090`). Not resolved; flagged for Rich to clarify.
+- Open: whether the "stop before executing step 1" restructuring (commit 721e12d) actually holds in real use is still unconfirmed (carried over from 2026-09-26).
 
 ### 2026-09-26
 - Fixed the stale cross-reference in SKILL.md step 1 ("ready for step 7" -> "ready for step 8"), matching the current numbering after the earlier restructure that split the stop-before-step-1 rule into its own step. Applied to all three copies (github-package clone, saved Cowork account skill via propose_skills). Committed as 90de4ec, pushed pending. Verified by direct text comparison across copies, no test suite exists for this project.
