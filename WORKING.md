@@ -33,8 +33,8 @@ No compiler, no test suite. "Done" for a SKILL.md change means: all three copies
 
 ### 2026-09-27
 - Removed the absolute local filesystem path from WORKING.md's "Where the code lives" section (was: the literal `/Users/rich/...` path; now describes the clone's location without it). No other section referenced that path.
-- Re-proposed the `sprint` skill to Rich via the skill-proposal tool to formally close the three-copy sync open item. Diffed the installed account skill against `github-package/skills/sprint/SKILL.md` first: content was already identical (only a trailing-newline difference), so this was a formal sync, not a content fix. Pending Rich's save.
-- Open: the "Sprint skill v2" commit referenced when this sprint started was not found anywhere in git log (checked full history, `6e8ee26` through `8c2d090`). Not resolved; flagged for Rich to clarify.
+- Re-proposed the `sprint` skill to Rich via the skill-proposal tool to formally close the three-copy sync open item. Diffed the installed account skill against `github-package/skills/sprint/SKILL.md` first: content was already identical (only a trailing-newline difference), so this was a formal sync, not a content fix. Rich says he saved it; not independently confirmed from this session (the synced skill cache doesn't reliably show a save).
+- Closed: the "Sprint skill v2" commit reference. Not found in git log; Rich said to drop it, not worth chasing.
 - Open: whether the "stop before executing step 1" restructuring (commit 721e12d) actually holds in real use is still unconfirmed (carried over from 2026-09-26).
 
 ### 2026-09-26
