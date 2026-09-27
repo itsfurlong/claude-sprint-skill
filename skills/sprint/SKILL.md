@@ -41,6 +41,8 @@ Create a new doc only when the user confirms none exists. Name it WORKING.md and
 - Protected items: anything off-limits or needing extra care, and known-fragile areas.
 - Changelog: empty, ready for step 8.
 
+The working doc is private by default: it holds how the work gets made, not the work itself. When it lives inside a git repo, add it to `.gitignore` as part of creating it, unless the user explicitly says to share it. If an existing working doc is already tracked, flag it and offer to untrack it (`git rm --cached`, which keeps the file on disk); don't untrack it without a yes.
+
 A sprint with no working doc has nowhere to read ground rules from and nowhere to write the changelog entry to. It does not function without one.
 
 ### 2. Triage first, always
@@ -109,7 +111,7 @@ A project is a code project when the work lives in a codebase. These rules add t
 - Where the code lives: the local clone. Every edit goes through it, as targeted string replacement, never full-file regeneration. A hosted repo connector or API is fine for read-only work (browsing history, diffing a past commit) but never for writing a change, not even a one-line one: most such write endpoints have no partial-patch mode, so even a small edit means resending the whole file. If no local clone exists yet, setting one up is part of the ground rules, before step 1 of the actual work.
 - Protected code paths: name anything off-limits or needing extra care (a regex another feature depends on, a canary check, anything that touches money or auth).
 - Steps: diagnose, or implement one change, or add tests for one behavior, or verify end to end. The done check is that it compiles and lints clean and the existing test suite still passes, built into every code-touching step's own prompt. The final end-to-end check runs the app, not just the unit tests.
-- Checkpoint: a local commit whose message states the root cause and what changed. Claude does not push unless it has been explicitly given push credentials and told to use them. The live version is the remote branch and anything that deploys from it.
+- Checkpoint: a local commit whose message states the root cause and what changed. Claude does not push unless it has been explicitly given push credentials and told to use them. The live version is the remote branch and anything that deploys from it. The working doc is never part of a commit; it stays in `.gitignore` (see step 1).
 - Git in a sandbox: run read-only checks as `git --no-optional-locks status` (and `diff`, `log`) so they don't leave lock files behind. If the environment can't delete files, a commit can fail on `.git/index.lock`. Don't retry or work around it: hand the user the commit command to run themselves, and tell them if a stale lock file needs removing first.
 
 The handoff (step 7) for every commit is a single fenced terminal block the user can paste as-is into a fresh terminal window. A fresh terminal opens at the home directory, so the block starts with `cd` to the repo's absolute path from the ground rules, never a relative path:

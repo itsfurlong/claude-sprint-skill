@@ -6,7 +6,7 @@ It turns a request into a written guide of small, paste-ready steps the user rev
 
 ## What it does
 
-1. Finds the project's working doc, or asks, and creates `WORKING.md` only when the user confirms the project is new.
+1. Finds the project's working doc, or asks, and creates `WORKING.md` only when the user confirms the project is new. The working doc stays private by default: inside a repo, it's added to `.gitignore`.
 2. Triages the request into a table (type, priority, in or out this sprint) and states the ground rules once, up front.
 3. Breaks the work into single-purpose, paste-ready steps, each ending in a done check, and stops for review before step 1.
 4. Executes one step at a time, stopping after each. It never touches the live version and never deletes files; anything recommended for deletion goes to `_recommended-for-deletion/`.
