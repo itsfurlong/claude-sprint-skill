@@ -1,6 +1,6 @@
 ---
 name: sprint
-description: Set up and run any multi-part project (code, writing, research, a website, a business plan) as a collaborative sprint between Claude and a human. Find or create the project's working doc, triage the ask, lay out what the work requires, write a reviewable guide of bounded steps with paste-ready prompts, then execute one step at a time, stopping for a go-ahead after each. Claude never touches the live version and never deletes files; shipping is always the human's move. Requires access to the project's files (Cowork or Claude Code).
+description: "Run any multi-part project (code, writing, research, a website, a business plan) as a human-led sprint: find the working doc, triage, lay out what the work requires, write a reviewable guide of paste-ready steps, then execute one step at a time, stopping after each. Never touches the live version or deletes files. Needs file access (Cowork or Claude Code)."
 ---
 
 # Sprint
@@ -19,11 +19,11 @@ A sprint reads and writes the project's files and its working doc, so it only ru
 
 ## The process
 
-**Mandatory, non-negotiable rule: presenting the guide and executing step 1 are two separate turns.** Writing the guide (steps 1 through 4 below) ends the turn. Step 5 covers this in detail, but state it here too because it is the rule most likely to get skipped: never run step 1, or any part of the work, in the same response that presents the guide to the user, no matter how obvious the fix looks or how the original request was phrased. Stop, show the guide, and wait for the user's next message before doing anything else.
+**Mandatory, non-negotiable rule: presenting the guide and executing step 1 are two separate turns.** Writing the guide (steps 1 through 4 below) ends the turn. Step 5 covers this in detail, but state it here too because it is the rule most likely to get skipped: never run step 1, or any part of the work, in the same response that presents the guide to the user, no matter how obvious the fix looks or how the original request was phrased. Stop, show the guide, and wait for the user's next message (in Claude Code, their plan approval; see step 5) before doing anything else.
 
 ### 1. Find the working doc, or create one
 
-Ground rules can only be "stated once, up front" (step 3) if there's somewhere they were stated before this sprint and will still be stated after it. That place is the project's working doc: the one file that holds the project's goal, ground rules, and history.
+The project's working doc is the one file that holds its goal, ground rules, and history. Step 3 reads from it; step 8 writes to it.
 
 Look before creating. Most sprints are not the first prompt in a project, so a working doc usually already exists, possibly under another name. Check these in one batch:
 
@@ -69,9 +69,9 @@ Before any steps, the guide answers one question: what does doing this even requ
 - Decisions that are theirs to make, and which step each one blocks.
 - Access or tools the work needs (accounts, credentials, software, budget), and whether this session has them.
 - Unknowns: what's assumed and unverified, and which step confirms it.
-- Rough size: how many phases and steps, so the user can judge whether this is one sprint or several.
+- Verdict and size, in one line: go, needs clarification (name what's missing and which step it blocks), or don't do this (say why in one sentence), plus how many phases and steps, so the user can judge whether this is one sprint or several. Small, clear asks default to go without discussion.
 
-If the answer changes the request (a missing input, a decision that has to come first, a scope that's bigger than it sounded), say so plainly. The user may reshape the ask before any steps get written.
+If the answer changes the request (a missing input, a decision that has to come first, a scope that's bigger than it sounded), say so plainly. The user may reshape the ask before any steps get written. A "don't do this" verdict ends the guide there: no steps get written until the user decides.
 
 Group related work into phases (by topic, or by the part of the project touched). Within a phase, each step is small enough to paste into a single fresh prompt and get a complete, checkable result back. A step does one thing: confirm (research, diagnose, check a source), or produce one change, or verify. Don't combine "produce" and "verify" into one step for anything nontrivial: a broken result is easier to catch when verification is its own pass.
 
@@ -80,21 +80,21 @@ Every step gets:
 - A one-line statement of its output (what exists after this step that didn't before).
 - A single prompt, written as if handed to a fresh session with no memory of this conversation: it names the exact file(s) and section, what to change, what not to touch, and what check to run before reporting back. A prompt that says "fix the part we discussed" is not paste-ready; a prompt that names the file, the section, the expected before and after, and the check to run is.
 
-The last step of every guide is always verify-checkpoint-stop: run the full done check one more time, do a real end-to-end check (read the whole draft through, load the page, rerun the numbers, run the app; not just the step-level checks), make a checkpoint that records what changed and why, and report it. Immediately after the checkpoint, before anything else, give the handoff (step 7). Never wait to be asked for it. Nothing after that until the user has reviewed the work themselves and given the go-ahead to ship.
+The last step of every guide is always verify-checkpoint-stop: run the full done check one more time, then do a real end-to-end check (read the whole draft through, load the page, rerun the numbers, run the app; not just the step-level checks). Next, where subagents exist, hand a fresh, read-only subagent with no conversation history only the finished output and the original brief (the request plus the working doc's goal), ask what is wrong, missing, or unclear, and report its findings to the user unfiltered. Where no subagent exists, say so in the report rather than skipping the check silently. If it finds a real problem, stop before the checkpoint and let the user decide. Then make a checkpoint that records what changed and why, and report it. Immediately after the checkpoint, before anything else, give the handoff (step 7). Never wait to be asked for it. Nothing after that until the user has reviewed the work themselves and given the go-ahead to ship.
 
 If a guide makes more than one checkpoint (a multi-topic sprint, or work landed in stages), each one gets its own handoff right after it, not one combined handoff saved for the end.
 
 ### 5. Stop after presenting the guide: mandatory
 
-This is its own step, not a footnote to step 6, because it is the rule most likely to get skipped: presenting the guide and starting to execute it are two different go-aheads, and they cannot both happen in the same turn.
-
 After writing the guide (steps 1 through 4), the response ends there. Do not run the guide's step 1, do not touch any file, do not run any command, even a read-only one, in that same response, and even if the work looks completely obvious or the user's original request sounded like a green light to just do it. A request to fix, build, write, or plan something is a request for a guide, not a request to skip the guide. Show the triage table, the ground rules, what the work requires, and every step's prompt, and wait.
 
 The user needs that pause to read the guide and change anything before the work moves: reorder steps, cut one, reword a prompt, correct a wrong assumption in the ground rules. Only start step 1, in a later turn, once they've explicitly said to proceed: either a plain go-ahead with no changes, or a go-ahead after they've told you what to fix and you've fixed the guide itself.
 
+In Claude Code, make this stop mechanical: once the working doc exists, enter plan mode before presenting the guide, so edits stay blocked until the user approves it. Do this automatically, without asking. In any other environment, don't mention plan mode. This covers only this gate, not the per-step stops in step 6. Approving the plan counts as the go-ahead for step 1 only: run it, then stop as step 6 requires.
+
 ### 6. Execute one step at a time
 
-Once the user has given the go-ahead from step 5, run the steps in order. After each step: report what happened, what the check showed, and stop. Do not start the next step without an explicit go-ahead, even if the result was clean. This is the actual point of the skill: it is a discipline, not just a document format. A guide that gets executed end to end with no stops has stopped being a sprint.
+Once the user has given the go-ahead from step 5, run the steps in order. After each step: report what happened, what the check showed, and stop. Do not start the next step without an explicit go-ahead, even if the result was clean. A guide that gets executed end to end with no stops has stopped being a sprint.
 
 If a step's result contradicts an assumption from the ground rules or an earlier step, stop and say so before continuing, even if the fix is obvious. Silently patching over a wrong assumption is how a guide drifts from what it says it's doing.
 
@@ -110,17 +110,15 @@ The handoff is written so the user can act on it with no edits:
 2. Where the checked work is (exact path or link) and what, specifically, to review before shipping.
 3. The exact action to take: a copy-paste block for anything run in a terminal, or numbered steps for anything done by hand. Code projects use the git block in "Code projects".
 
-This handoff is the default ending of any step that makes a checkpoint, whether that's the guide's final verify-checkpoint-stop step or an earlier one. Never make the user ask for it.
-
 ### 8. Update the working doc after: not optional
 
-The working doc from step 1 gets one dated entry after the sprint closes: what shipped, checkpoint references (commit hashes, file versions), what's shipped versus checkpoint-only, what was verified and how, any caveat or unverified claim that shipped anyway, and anything left open. This is not conditional on the project already having a habit of keeping one: step 1 guaranteed the doc exists, so step 8 always has somewhere to write. This is what makes the next sprint able to start from ground truth instead of from memory.
+The working doc from step 1 gets one dated entry after the sprint closes: what shipped, checkpoint references (commit hashes, file versions), what's shipped versus checkpoint-only, what was verified and how, any caveat or unverified claim that shipped anyway, and anything left open. This is what makes the next sprint able to start from ground truth instead of from memory.
 
 ## Code projects
 
 A project is a code project when the work lives in a codebase. These rules add to the core process, and where they're more specific, they win.
 
-- Where the code lives: the local clone. Every edit goes through it, as targeted string replacement, never full-file regeneration. A hosted repo connector or API is fine for read-only work (browsing history, diffing a past commit) but never for writing a change, not even a one-line one: most such write endpoints have no partial-patch mode, so even a small edit means resending the whole file. If no local clone exists yet, setting one up is part of the ground rules, before step 1 of the actual work.
+- Where the code lives: the local clone. Every edit goes through it. A hosted repo connector or API is fine for read-only work (browsing history, diffing a past commit) but never for writing a change, not even a one-line one: most such write endpoints have no partial-patch mode, so even a small edit means resending the whole file. If no local clone exists yet, setting one up is part of the ground rules, before step 1 of the actual work.
 - Protected code paths: name anything off-limits or needing extra care (a regex another feature depends on, a canary check, anything that touches money or auth).
 - Steps: diagnose, or implement one change, or add tests for one behavior, or verify end to end. The done check is that it compiles and lints clean and the existing test suite still passes, built into every code-touching step's own prompt. The final end-to-end check runs the app, not just the unit tests.
 - Checkpoint: a local commit whose message states the root cause and what changed. Claude does not push unless it has been explicitly given push credentials and told to use them. The live version is the remote branch and anything that deploys from it. The working doc is never part of a commit; it stays in `.gitignore` (see step 1).
@@ -154,7 +152,7 @@ The working doc names the project type, and the type sets three things the core 
 
 - Don't re-paste or re-read a whole file or document inside a step's prompt when a targeted edit, or a description of the exact lines or passage to change, will do.
 - For a large or complex edit, delegate to a subagent that can read and edit directly, if one is available, rather than pulling the whole file into the main conversation just to hand it back with one part changed.
-- Keep each step's prompt self-contained but minimal: state only what that step needs, not a recap of the ground rules or earlier steps. Those already live in the guide and don't need repeating inside every prompt.
+- Keep each step's prompt self-contained but minimal: state only what that step needs, not a recap of the ground rules or earlier steps.
 - Batch independent read-only checks (reading two files, checking two pages, verifying two sources) into one round of tool calls instead of one at a time when there's no dependency between them.
 - Prefer one step that confirms cleanly over three that guess and check. A wrong guess costs more than the extra step to confirm first would have.
 

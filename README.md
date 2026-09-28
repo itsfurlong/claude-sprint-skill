@@ -18,9 +18,9 @@ It turns a request into a written guide of small, paste-ready steps the user rev
 
 1. Finds the project's working doc, or asks, and creates `WORKING.md` only when the user confirms the project is new. The working doc stays private by default: inside a repo, it's added to `.gitignore`.
 2. Triages the request into a table (type, priority, in or out this sprint) and states the ground rules once, up front.
-3. Lays out what the work requires (inputs, decisions, access, unknowns), then breaks it into single-purpose, paste-ready steps, each ending in a done check, and stops for review before step 1.
+3. Lays out what the work requires (inputs, decisions, access, unknowns) with a verdict: go, needs clarification, or don't do this. Then it breaks the work into single-purpose, paste-ready steps, each ending in a done check, and stops for review before step 1. In Claude Code, plan mode blocks edits until the guide is approved.
 4. Executes one step at a time, stopping after each. It never touches the live version and never deletes files; anything recommended for deletion goes to `_recommended-for-deletion/`.
-5. Hands off every checkpoint (push, publish, send) for the human to ship, then logs what shipped in the working doc.
+5. Before the final checkpoint, a fresh subagent with no conversation history reviews the finished work against the brief. Then it hands off every checkpoint (push, publish, send) for the human to ship, and logs what shipped in the working doc.
 
 Full detail in [`skills/sprint/SKILL.md`](skills/sprint/SKILL.md).
 
@@ -38,7 +38,7 @@ The working doc names the project type, which sets the done check, the checkpoin
 
 ## Requirements
 
-The skill needs access to the project's files, so it runs in Claude Cowork or Claude Code. In a plain chat with no file access, it says so in one line and stops. Git is optional: code projects use it, everything else checkpoints with versioned copies. No personal setup or global instructions required.
+The skill needs access to the project's files, so it runs in Claude Cowork or Claude Code. In a plain chat with no file access, it says so in one line and stops. Git is optional: code projects use it, everything else checkpoints with versioned copies. No personal setup or global instructions required. SKILL.md is about 19 KB (roughly 4,800 tokens, estimated at 4 bytes per token) and loads in full each time `/sprint` runs.
 
 ## Using it
 
