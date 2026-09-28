@@ -1,6 +1,6 @@
 ---
 name: sprint
-description: Set up and run any multi-part project (code, writing, research, a website, a business plan) as a collaborative sprint between Claude and a human. Find or create the project's working doc, triage the ask, write a reviewable guide of bounded steps with paste-ready prompts, then execute one step at a time, stopping for a go-ahead after each. Claude never touches the live version and never deletes files; shipping is always the human's move. Requires access to the project's files (Cowork or Claude Code).
+description: Set up and run any multi-part project (code, writing, research, a website, a business plan) as a collaborative sprint between Claude and a human. Find or create the project's working doc, triage the ask, lay out what the work requires, write a reviewable guide of bounded steps with paste-ready prompts, then execute one step at a time, stopping for a go-ahead after each. Claude never touches the live version and never deletes files; shipping is always the human's move. Requires access to the project's files (Cowork or Claude Code).
 ---
 
 # Sprint
@@ -61,7 +61,17 @@ Every guide opens with the constraints that apply to every step in it, so no ind
 - What "done" means: the done check for this project type, from the working doc. Every step that produces work ends with that check built into its own prompt. After a checkpoint, give the handoff (step 7) and stop.
 - Anything that must never appear in a file, a doc, a commit, or a message (secrets, personal or customer data, a private link).
 
-### 4. Break the work into phases and bounded steps
+### 4. Say what this requires, then break the work into phases and bounded steps
+
+Before any steps, the guide answers one question: what does doing this even require? Many requests hide prerequisites the user hasn't thought about, and the user should see them before approving a plan, not discover them at step 6. Give a short block, right after the ground rules:
+
+- What the user needs to provide: inputs, files, content, or facts only they have.
+- Decisions that are theirs to make, and which step each one blocks.
+- Access or tools the work needs (accounts, credentials, software, budget), and whether this session has them.
+- Unknowns: what's assumed and unverified, and which step confirms it.
+- Rough size: how many phases and steps, so the user can judge whether this is one sprint or several.
+
+If the answer changes the request (a missing input, a decision that has to come first, a scope that's bigger than it sounded), say so plainly. The user may reshape the ask before any steps get written.
 
 Group related work into phases (by topic, or by the part of the project touched). Within a phase, each step is small enough to paste into a single fresh prompt and get a complete, checkable result back. A step does one thing: confirm (research, diagnose, check a source), or produce one change, or verify. Don't combine "produce" and "verify" into one step for anything nontrivial: a broken result is easier to catch when verification is its own pass.
 
@@ -78,7 +88,7 @@ If a guide makes more than one checkpoint (a multi-topic sprint, or work landed 
 
 This is its own step, not a footnote to step 6, because it is the rule most likely to get skipped: presenting the guide and starting to execute it are two different go-aheads, and they cannot both happen in the same turn.
 
-After writing the guide (steps 1 through 4), the response ends there. Do not run the guide's step 1, do not touch any file, do not run any command, even a read-only one, in that same response, and even if the work looks completely obvious or the user's original request sounded like a green light to just do it. A request to fix, build, write, or plan something is a request for a guide, not a request to skip the guide. Show the triage table, the ground rules, and every step's prompt, and wait.
+After writing the guide (steps 1 through 4), the response ends there. Do not run the guide's step 1, do not touch any file, do not run any command, even a read-only one, in that same response, and even if the work looks completely obvious or the user's original request sounded like a green light to just do it. A request to fix, build, write, or plan something is a request for a guide, not a request to skip the guide. Show the triage table, the ground rules, what the work requires, and every step's prompt, and wait.
 
 The user needs that pause to read the guide and change anything before the work moves: reorder steps, cut one, reword a prompt, correct a wrong assumption in the ground rules. Only start step 1, in a later turn, once they've explicitly said to proceed: either a plain go-ahead with no changes, or a go-ahead after they've told you what to fix and you've fixed the guide itself.
 
@@ -87,6 +97,8 @@ The user needs that pause to read the guide and change anything before the work 
 Once the user has given the go-ahead from step 5, run the steps in order. After each step: report what happened, what the check showed, and stop. Do not start the next step without an explicit go-ahead, even if the result was clean. This is the actual point of the skill: it is a discipline, not just a document format. A guide that gets executed end to end with no stops has stopped being a sprint.
 
 If a step's result contradicts an assumption from the ground rules or an earlier step, stop and say so before continuing, even if the fix is obvious. Silently patching over a wrong assumption is how a guide drifts from what it says it's doing.
+
+Each stop is a checkpoint for both sides. Sometimes the report ends in a plain "continue?", and that's fine. But if the step turned up anything unforeseen (a complication, a risk, or an opportunity), flag it at the stop and let the user decide whether to act on it. Don't fold it into the next step on your own. The user can raise the same kinds of things at any stop, and the guide gets updated before the work moves on.
 
 ### 7. Hand off what only the human does: always, automatically
 
